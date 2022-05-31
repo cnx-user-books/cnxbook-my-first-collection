@@ -1,0 +1,847 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Sorting</title>
+  <metadata>
+  <md:content-id>m29530</md:content-id><md:title>Sorting</md:title>
+  <md:abstract/>
+  <md:uuid>fd2f8e48-0b3a-42de-acde-daf9682802fe</md:uuid>
+</metadata>
+
+<content>
+    <section id="id-279904021723">
+      <title>6. Sorting</title>
+      <section id="id-756930265323">
+        <title>6.1. Basic sort algorithms</title>
+        <para id="id3430814">(From Wikipedia, the free encyclopedia)</para>
+        <para id="id3430824">In computer science and mathematics, a sorting algorithm is an <link url="http://en.wikipedia.org/wiki/Algorithm">algorithm</link> that puts elements of a list in a certain order. The most-used orders are numerical order and lexicographical order. Efficient sorting is important to optimizing the use of other algorithms (such as search and merge algorithms) that require sorted lists to work correctly; it is also often useful for canonicalizing data and for producing human-readable output. More formally, the output must satisfy two conditions:</para>
+        <list id="id3430861" list-type="enumerated">
+          <item>The output is in non-decreasing order (each element is no smaller than the previous element according to the desired total order);</item>
+          <item>The output is a permutation, or reordering, of the input.</item>
+        </list>
+        <para id="id3430878">Since the dawn of computing, the sorting problem has attracted a great deal of research, perhaps due to the complexity of solving it efficiently despite its simple, familiar statement. For example, bubble sort was analyzed as early as 1956. Although many consider it a solved problem, useful new sorting algorithms are still being invented to this day (for example, library sort was first published in 2004). Sorting algorithms are prevalent in introductory computer science classes, where the abundance of algorithms for the problem provides a gentle introduction to a variety of core algorithm concepts, such as big O notation, divide-and-conquer algorithms, data structures, randomized algorithms, best, worst and average case analysis, time-space tradeoffs, and lower bounds.</para>
+        <para id="id3430896">Classification</para>
+        <para id="id3430907">Sorting algorithms used in computer science are often classified by:</para>
+        <list id="id3430913" list-type="bulleted">
+          <item>Computational complexity (worst, average and best behaviour) of element comparisons in terms of the size of the list (n). For typical sorting algorithms good behavior is O(n log n) and bad behavior is Ω(n²). (See Big O notation) Ideal behavior for a sort is O(n). Sort algorithms which only use an abstract key comparison operation always need at least Ω(n log n) comparisons on average.</item>
+          <item>Computational complexity of swaps (for "in place" algorithms).</item>
+          <item>Memory usage (and use of other computer resources). In particular, some sorting algorithms are "in place", such that only O(1) or O(log n) memory is needed beyond the items being sorted, while others need to create auxiliary locations for data to be temporarily stored.</item>
+          <item>Recursion. Some algorithms are either recursive or non recursive, while others may be both (e.g., merge sort).</item>
+          <item>Stability: stable sorting algorithms maintain the relative order of records with equal keys (i.e. values). See below for more information.</item>
+          <item>Whether or not they are a comparison sort. A comparison sort examines the data only by comparing two elements with a comparison operator.</item>
+          <item>General method: insertion, exchange, selection, merging, etc. Exchange sorts include bubble sort and quicksort. Selection sorts include shaker sort and heapsort.</item>
+        </list>
+        <para id="id3431070">Stability</para>
+        <para id="id3431081">Stable sorting algorithms maintain the relative order of records with equal keys<link url="http://en.wikipedia.org/wiki/Strict_weak_ordering">http://en.wikipedia.org/wiki/Strict_weak_ordering</link> (i.e. sort key values). That is, a sorting algorithm is stable if whenever there are two records R and S with the same key and with R appearing before S in the original list, R will appear before S in the sorted list.</para>
+        <para id="id3431179">When equal elements are indistinguishable, such as with integers, or more generally, any data where the entire element is the key, stability is not an issue. However, assume that the following pairs of numbers are to be sorted by their first coordinate:</para>
+        <para id="id3431188">(4, 1) (3, 7) (3, 1) (5, 6)</para>
+        <para id="id3431199">In this case, two different results are possible, one which maintains the relative order of records with equal keys, and one which does not:</para>
+        <para id="id3431206">(3, 7) (3, 1) (4, 1) (5, 6) (order maintained)</para>
+        <para id="id3431222">(3, 1) (3, 7) (4, 1) (5, 6) (order changed)</para>
+        <para id="id3431238">Unstable sorting algorithms may change the relative order of records with equal keys, but stable sorting algorithms never do so. Unstable sorting algorithms can be specially implemented to be stable. One way of doing this is to artificially extend the key comparison, so that comparisons between two objects with otherwise equal keys are decided using the order of the entries in the original data order as a tie-breaker. Remembering this order, however, often involves an additional space cost.</para>
+        <para id="id3431251">Sorting based on a primary, secondary, tertiary, etc. sort key can be done by any sorting method, taking all sort keys into account in comparisons (in other words, using a single composite sort key). If a sorting method is stable, it is also possible to sort multiple times, each time with one sort key. In that case the sort keys can be applied in any order, where some key orders may lead to a smaller running time.</para>
+        <section id="id-962168715802">
+          <title>6.1.1. Insertion sort</title>
+          <para id="id3431269">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3431279">Insertion sort is a simple <link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link>, a <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison sort</link> in which the sorted array (or list) is built one entry at a time. It is much less efficient on large lists than more advanced algorithms such as <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link>, <link url="http://en.wikipedia.org/wiki/Heapsort">heapsort</link>, or <link url="http://en.wikipedia.org/wiki/Merge_sort">merge sort</link>, but it has various advantages:</para>
+          <list id="id3431350" list-type="bulleted">
+            <item>Simple to implement</item>
+            <item>Efficient on (quite) small data sets</item>
+            <item>Efficient on data sets which are already substantially sorted: it runs in O(n + d) time, where d is the number of <link url="http://en.wikipedia.org/wiki/Permutation_groups#Simple_transpositions.2C_inversions_and_sorting">inversions</link></item>
+            <item>More efficient in practice than most other simple <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n2) algorithms such as <link url="http://en.wikipedia.org/wiki/Selection_sort">selection sort</link> or <link url="http://en.wikipedia.org/wiki/Bubble_sort">bubble sort</link>: the average time is n2/4 and it is linear in the best case</item>
+            <item><link url="http://en.wikipedia.org/wiki/Stable_sort">Stable</link> (does not change the relative order of elements with equal keys)</item>
+            <item><link url="http://en.wikipedia.org/wiki/In-place_algorithm">In-place</link> (only requires a constant amount O(1) of extra memory space)</item>
+            <item>It is an <link url="http://en.wikipedia.org/wiki/Online_algorithm">online algorithm</link>, in that it can sort a list as it receives it.</item>
+          </list>
+        </section>
+      </section>
+      <section id="id-151549836084">
+        <title>Algorithm</title>
+        <para id="id3431560">In abstract terms, every iteration of an insertion sort removes an element from the input data, inserting it at the correct position in the already sorted list, until no elements are left in the input. The choice of which element to remove from the input is arbitrary and can be made using almost any choice algorithm.</para>
+        <para id="id3431570">Sorting is typically done in-place. The resulting array after k iterations contains the first k entries of the input array and is sorted. In each step, the first remaining entry of the input is removed, inserted into the result at the right position, thus extending the result:</para>
+        <para id="id3431588">
+          <figure id="id3431598">
+            <media id="id8869194" alt=""><image src="../../media/Picture 66.png" mime-type="image/png" height="49" width="271"/></media>
+          </figure>
+        </para>
+        <para id="id3431622">becomes:</para>
+        <para id="id3431627">
+          <figure id="id3431636">
+            <media id="id1169431163371" alt=""><image src="../../media/Picture 67.png" mime-type="image/png" height="48" width="257"/></media>
+          </figure>
+        </para>
+        <para id="id3431660">with each element &gt; x copied to the right as it is compared against x.</para>
+        <para id="id3431677">The most common variant, which operates on arrays, can be described as:</para>
+        <list id="id3431682" list-type="enumerated">
+          <item>Suppose we have a method called insert designed to insert a value into a sorted sequence at the beginning of an array. It operates by starting at the end of the sequence and shifting each element one place to the right until a suitable position is found for the new element. It has the side effect of overwriting the value stored immediately after the sorted sequence in the array.</item>
+          <item>To perform insertion sort, start at the left end of the array and invoke insert to insert each element encountered into its correct position. The ordered sequence into which we insert it is stored at the beginning of the array in the set of indexes already examined. Each insertion overwrites a single value, but this is okay because it's the value we're inserting.</item>
+        </list>
+        <para id="id3431731">A simple pseudocode version of the complete algorithm follows, where the arrays are zero-based:</para>
+        <para id="id3431737">insertionSort(array A)</para>
+        <para id="id3431754">for i &lt;- 1 to length[A]-1 do</para>
+        <para id="id3431785">value &lt;- A[i] </para>
+        <para id="id3431792">j &lt;- i-1</para>
+        <para id="id3431800">while j &gt;= 0 and A[j] &gt; value do </para>
+        <para id="id3431827">A[j + 1] = A[j];</para>
+        <para id="id3431835">j &lt;- j-1</para>
+        <para id="id3431842">A[j+1] &lt;- value</para>
+      </section>
+      <section id="id-658401682882">
+        <title>Good and bad input cases</title>
+        <para id="id3431869">In the best case of an already sorted array, this implementation of insertion sort takes <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n) time: in each iteration, the first remaining element of the input is only compared with the last element of the sorted subsection of the array. This same case provides worst-case behavior for non-randomized and poorly implemented <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link>, which will take <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n2) time to sort an already-sorted list. Thus, if an array is sorted or nearly sorted, insertion sort will significantly outperform quicksort.</para>
+        <para id="id3431930">The worst case is an array sorted in reverse order, as every execution of the inner loop will have to scan and shift the entire sorted section of the array before inserting the next element. Insertion sort takes O(n2) time in this worst case as well as in the average case, which makes it impractical for sorting large numbers of elements. However, insertion sort's inner loop is very fast, which often makes it one of the fastest algorithms for sorting small numbers of elements, typically less than 10 or so.</para>
+      </section>
+      <section id="id-373048224551">
+        <title>Comparisons to other sorts</title>
+        <para id="id3431971">Insertion sort is very similar to <link url="http://en.wikipedia.org/wiki/Selection_sort">selection sort</link>. Just like in selection sort, after k passes through the array, the first k elements are in sorted order. For selection sort, these are the k smallest elements, while in insertion sort they are whatever the first k elements were in the unsorted array. Insertion sort's advantage is that it only scans as many elements as it needs to in order to place the k + 1st element, while selection sort must scan all remaining elements to find the absolute smallest element.</para>
+        <para id="id3432021">Simple calculation shows that insertion sort will therefore usually perform about half as many comparisons as selection sort. Assuming the k + 1st element's rank is random, it will on the average require shifting half of the previous k elements over, while selection sort always requires scanning all unplaced elements. If the array is not in a random order, however, insertion sort can perform just as many comparisons as selection sort (for a reverse-sorted list). It will also perform far fewer comparisons, as few as n - 1, if the data is pre-sorted, thus insertion sort is much more efficient if the array is already sorted or "close to sorted." It can be seen as an advantage for some <link url="http://en.wikipedia.org/wiki/Real-time_computing">real-time</link> applications that selection sort will perform identically regardless of the order of the array, while insertion sort's running time can vary considerably.</para>
+        <para id="id3432068">While insertion sort typically makes fewer comparisons than <link url="http://en.wikipedia.org/wiki/Selection_sort">selection sort</link>, it requires more writes because the inner loop can require shifting large sections of the sorted portion of the array. In general, insertion sort will write to the array O(n2) times while selection sort will write only O(n) times. For this reason, selection sort may be better in cases where writes to memory are significantly more expensive than reads, such as <link url="http://en.wikipedia.org/wiki/EEPROM">EEPROM</link> or <link url="http://en.wikipedia.org/wiki/Flash_memory">Flash memory</link>.</para>
+        <para id="id3432128">Some <link url="http://en.wikipedia.org/wiki/Divide-and-conquer_algorithm">divide-and-conquer algorithms</link> such as <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link> and <link url="http://en.wikipedia.org/wiki/Mergesort">mergesort</link> sort by recursively dividing the list into smaller sublists which are then sorted. A useful optimization in practice for these algorithms is to switch to insertion sort for "sorted enough" sublists on which insertion sort outperforms the more complex algorithms. The size of list for which insertion sort has the advantage varies by environment and implementation, but is typically around 8 to 20 elements.</para>
+      </section>
+      <section id="id-59099064603">
+        <title>Variants</title>
+        <para id="id3432193"><link url="http://en.wikipedia.org/wiki/Donald_Shell">D.L. Shell</link> made substantial improvements to the algorithm, and the modified version is called <link url="http://en.wikipedia.org/wiki/Shell_sort">Shell sort</link>. It compares elements separated by a distance that decreases on each pass. Shell sort has distinctly improved running times in practical work, with two simple variants requiring O(n3/2) and O(n4/3) time.</para>
+        <para id="id3432243">If comparisons are very costly compared to swaps, as is the case for example with string keys stored by reference or with human interaction (such as choosing one of a pair displayed side-by-side), then using binary insertion sort can be a good strategy. Binary insertion sort employs <link url="http://en.wikipedia.org/wiki/Binary_search">binary search</link> to find the right place to insert new elements, and therefore performs <media id="id1169427087495" alt=""><image src="../../media/Picture 68.png" mime-type="image/png" height="23" width="94"/></media>comparisons in the worst case, which is Θ(n log n). The algorithm as a whole still takes Θ(n2) time on average due to the series of swaps required for each insertion, and since it always uses binary search, the best case is no longer Ω(n) but Ω(n log n).</para>
+        <para id="id3432333">To avoid having to make a series of swaps for each insertion, we could instead store the input in a <link url="http://en.wikipedia.org/wiki/Linked_list">linked list</link>, which allows us to insert and delete elements in constant time. Unfortunately, binary search on a linked list is impossible, so we still spend O(n2) time searching. If we instead replace it by a more sophisticated <link url="http://en.wikipedia.org/wiki/Data_structure">data structure</link> such as a <link url="http://en.wikipedia.org/wiki/Heap_%28data_structure%29">heap</link> or <link url="http://en.wikipedia.org/wiki/Binary_tree">binary tree</link>, we can significantly decrease both search and insert time. This is the essence of <link url="http://en.wikipedia.org/wiki/Heap_sort">heap sort</link> and <link url="http://en.wikipedia.org/wiki/Binary_tree_sort">binary tree sort</link>.</para>
+        <para id="id3432424">In 2004, Bender, Farach-Colton, and Mosteiro published a new variant of insertion sort called <link url="http://en.wikipedia.org/wiki/Library_sort">library sort</link> or gapped insertion sort that leaves a small number of unused spaces ("gaps") spread throughout the array. The benefit is that insertions need only shift elements over until a gap is reached. Surprising in its simplicity, they show that this sorting algorithm runs with high probability in O(n log n) time. </para>
+      </section>
+      <section id="id-445784160332">
+        <title>Examples</title>
+        <para id="id3432481">c++ Example:</para>
+        <para id="id3432486">#include &lt;iostream&gt;</para>
+        <para id="id3432494">#include &lt;cstdio&gt;</para>
+        <para id="id3432502">//Originally Compiled tested with g++ on Linux</para>
+        <para id="id3432511">using namespace std;</para>
+        <para id="id3432532">bool swap(int&amp;, int&amp;); //Swaps Two Ints</para>
+        <para id="id3432566">void desc(int* ar, int); //Nothing Just Shows The Array Visually</para>
+        <para id="id3432607">int ins_sort(int*, int); //The Insertion Sort Function</para>
+        <para id="id3432649">int main()</para>
+        <para id="id3432665">{</para>
+        <para id="id3432672">int array[9] = {4, 3, 5, 1, 2, 0, 7, 9, 6}; //The Original Array</para>
+        <para id="id3432794">desc(array, 9);</para>
+        <para id="id3432825">*array = ins_sort(array, 9);</para>
+        <para id="id3432857">cout &lt;&lt; "Array Sorted Press Enter To Continue and See the Resultant Array" &lt;&lt; endl</para>
+        <para id="id3432885">&lt;&lt; "-----------------8&lt;--------------------------------&gt;8--------------";</para>
+        <para id="id3432906">getchar();</para>
+        <para id="id3432928">desc(array, 9);</para>
+        <para id="id3432959">getchar();</para>
+        <para id="id3432981">return 0;</para>
+        <para id="id3433007">}</para>
+        <para id="id3433014">int ins_sort(int* array, int len)</para>
+        <para id="id3433051">{</para>
+        <para id="id3433058">for (int i = 0; i &lt; len; i++)</para>
+        <para id="id3433102">{</para>
+        <para id="id3433115">int val = array[i];</para>
+        <para id="id3433150">int key = i;</para>
+        <para id="id3433167">cout &lt;&lt; "key(Key) = " &lt;&lt; key &lt;&lt; "\tval(Value) = " &lt;&lt; val &lt;&lt; endl;</para>
+        <para id="id3433212">for (; key &gt;= 1 &amp;&amp; array[key-1] &gt;= val; --key)</para>
+        <para id="id3470149">{</para>
+        <para id="id3470163">cout &lt;&lt; "Swapping Backward\tfrom (key) " &lt;&lt; key &lt;&lt; " of (Value) " &lt;&lt; array[key] &lt;&lt; "\tto (key) " &lt;&lt; key-1</para>
+        <para id="id3470246">&lt;&lt; " of (Value) " &lt;&lt; array[key-1];</para>
+        <para id="id3470286">cout &lt;&lt; "\n\t" &lt;&lt; key &lt;&lt; " &lt;----&gt; " &lt;&lt; key-1 &lt;&lt; "\t( " &lt;&lt; array[key] &lt;&lt; "&lt;----&gt; " &lt;&lt; array[key-1] &lt;&lt; " )";</para>
+        <para id="id3470412">swap(array[key], array[key-1]);</para>
+        <para id="id3470468">desc(array, 9);</para>
+        <para id="id3470500">}</para>
+        <para id="id3470513">}</para>
+        <para id="id3470526">return *array;</para>
+        <para id="id3470544">}</para>
+        <para id="id3470552">bool swap(int&amp; pos1, int&amp; pos2)</para>
+        <para id="id3470577">{</para>
+        <para id="id3470584">int tmp = pos1;</para>
+        <para id="id3470602">pos1 = pos2;</para>
+        <para id="id3470609">pos2 = tmp;</para>
+        <para id="id3470617">return true;</para>
+        <para id="id3470643">}</para>
+        <para id="id3470650">void desc(int* ar, int len)</para>
+        <para id="id3470688">{</para>
+        <para id="id3470695">cout &lt;&lt; endl &lt;&lt; "Describing The Given Array" &lt;&lt; endl;</para>
+        <para id="id3470722">for (int i = 0; i &lt; len; i++)</para>
+        <para id="id3470765">cout &lt;&lt; "_______" &lt;&lt; "\t";</para>
+        <para id="id3470808">cout &lt;&lt; endl;</para>
+        <para id="id3470827">for (int i = 0; i &lt; len; i++)</para>
+        <para id="id3470870">cout &lt;&lt; " | " &lt;&lt; i &lt;&lt; " | " &lt;&lt; "\t";</para>
+        <para id="id3470922">cout &lt;&lt; endl;</para>
+        <para id="id3470941">for (int i = 0; i &lt; len; i++)</para>
+        <para id="id3470984">cout &lt;&lt; " ( " &lt;&lt; ar[i] &lt;&lt; " ) " &lt;&lt; "\t";</para>
+        <para id="id3471053">cout&lt;&lt;endl;</para>
+        <para id="id3471060">for (int i = 0; i &lt; len; i++)</para>
+        <para id="id3471104">cout &lt;&lt; "-------" &lt;&lt; "\t";</para>
+        <para id="id3471147">getchar();</para>
+        <para id="id3471169">}</para>
+        <para id="id3471176">Python Example:</para>
+        <para id="id3471181">def insertion_sort(A):</para>
+        <para id="id3471209">for i in range(1, len(A)):</para>
+        <para id="id3471272">key = A[i]</para>
+        <para id="id3471295">j = i-1</para>
+        <para id="id3471310">while(j &gt;= 0 and A[j] &gt; key):</para>
+        <para id="id3471374">A[j+1] = A[j]</para>
+        <para id="id3471417">j = j-1</para>
+        <para id="id3471432">A[j+1] = key</para>
+        <section id="id-33980548093">
+          <title>6.1.2. Selection sort</title>
+          <para id="id3471471">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3471481">Selection sort is a <link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link>, specifically an <link url="http://en.wikipedia.org/wiki/In-place_algorithm">in-place</link><link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison sort</link>. It has <link url="http://en.wikipedia.org/wiki/Big_O_notation">Θ</link>(n2) complexity, making it inefficient on large lists, and generally performs worse than the similar <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>. Selection sort is noted for its simplicity, and also has performance advantages over more complicated algorithms in certain situations. It works as follows:</para>
+          <list id="id3471563" list-type="enumerated">
+            <item>Find the minimum value in the list</item>
+            <item>Swap it with the value in the first position</item>
+            <item>Repeat the steps above for remainder of the list (starting at the second position)</item>
+          </list>
+          <para id="id3471584">Effectively, we divide the list into two parts: the sublist of items already sorted, which we build up from left to right and is found at the beginning, and the sublist of items remaining to be sorted, occupying the remainder of the array.</para>
+          <para id="id3471593">Here is an example of this sort algorithm sorting five elements:</para>
+          <para id="id3471598">31 25 12 22 11</para>
+          <para id="id3471602">11 25 12 22 31</para>
+          <para id="id3471607">11 12 25 22 31</para>
+          <para id="id3471612">11 12 22 25 31</para>
+          <para id="id3471616">Selection sort can also be used on list structures that make add and remove efficient, such as a <link url="http://en.wikipedia.org/wiki/Linked_list">linked list</link>. In this case it's more common to remove the minimum element from the remainder of the list, and then insert it at the end of the values sorted so far. For example:</para>
+          <para id="id3471647">31 25 12 22 11</para>
+          <para id="id3471651">11 31 25 12 22</para>
+          <para id="id3471656">11 12 31 25 22</para>
+          <para id="id3471660">11 12 22 31 25</para>
+          <para id="id3471665">11 12 22 25 31 </para>
+        </section>
+      </section>
+      <section id="id-149395534481">
+        <title>Implementation</title>
+        <para id="id3471682">The following is a C/C++ implementation, which makes use of a <link url="http://en.wikipedia.org/wiki/Swap_%28computer_science%29">swap</link> function:</para>
+        <para id="id3471699">void selectionSort(int a[], int size)</para>
+        <para id="id3471744">{</para>
+        <para id="id3471752">int i, j, min;</para>
+        <para id="id3471770">for (i = 0; i &lt; size - 1; i++)</para>
+        <para id="id3471818">{</para>
+        <para id="id3471832">min = i;</para>
+        <para id="id3471839">for (j = i+1; j &lt; size; j++)</para>
+        <para id="id3471878">{</para>
+        <para id="id3471892">if (a[j] &lt; a[min])</para>
+        <para id="id3471947">{ </para>
+        <para id="id3471967">min = j;</para>
+        <para id="id3471975">}</para>
+        <para id="id3471988">}</para>
+        <para id="id3472002">swap(a[i], a[min]);</para>
+        <para id="id3472053">}</para>
+        <para id="id3472067">}</para>
+        <para id="id3472074">Python example:</para>
+        <para id="id3472078">def selection_sort(A):</para>
+        <para id="id3472107">for i in range(0, len(A)-1):</para>
+        <para id="id3472178">min = A[i]</para>
+        <para id="id3472208">pos = i</para>
+        <para id="id3472216">for j in range(i+1, len(A)):</para>
+        <para id="id3472283">if( A[j] &lt; min ):</para>
+        <para id="id3472338">min = A[j]</para>
+        <para id="id3472368">pos = j</para>
+        <para id="id3472376">A[pos] = A[i]</para>
+        <para id="id3472415">A[i] = min</para>
+      </section>
+      <section id="id-571064771615">
+        <title>Analysis</title>
+        <para id="id3472464">Selection sort is not difficult to analyze compared to other sorting algorithms since none of the loops depend on the data in the array. Selecting the lowest element requires scanning all n elements (this takes n - 1 comparisons) and then swapping it into the first position. Finding the next lowest element requires scanning the remaining n - 1 elements and so on, for (n - 1) + (n - 2) + ... + 2 + 1 = n(n - 1) / 2 = Θ(n2) comparisons (see <link url="http://en.wikipedia.org/wiki/Arithmetic_progression">arithmetic progression</link>). Each of these scans requires one swap for n - 1 elements (the final element is already in place). Thus, the comparisons dominate the running time, which is Θ(n2).</para>
+      </section>
+      <section id="id-110757386525">
+        <title>Comparison to other Sorting Algorithms</title>
+        <para id="id3472572">Among simple average-case Θ(n2) algorithms, selection sort always outperforms <link url="http://en.wikipedia.org/wiki/Bubble_sort">bubble sort</link> and <link url="http://en.wikipedia.org/wiki/Gnome_sort">gnome sort</link>, but is generally outperformed by <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>. Insertion sort is very similar in that after the kth iteration, the first k elements in the array are in sorted order. Insertion sort's advantage is that it only scans as many elements as it needs to in order to place the k + 1st element, while selection sort must scan all remaining elements to find the k + 1st element.</para>
+        <para id="id3472650">Simple calculation shows that insertion sort will therefore usually perform about half as many comparisons as selection sort, although it can perform just as many or far fewer depending on the order the array was in prior to sorting. It can be seen as an advantage for some <link url="http://en.wikipedia.org/wiki/Real-time_computing">real-time</link> applications that selection sort will perform identically regardless of the order of the array, while insertion sort's running time can vary considerably. However, this is more often an advantage for insertion sort in that it runs much more efficiently if the array is already sorted or "close to sorted."</para>
+        <para id="id3472676">Another key difference is that selection sort always performs Θ(n) swaps, while insertion sort performs Θ(n2) swaps in the average and worst cases. Because swaps require writing to the array, selection sort is preferable if writing to memory is significantly more expensive than reading, such as when dealing with an array stored in <link url="http://en.wikipedia.org/wiki/EEPROM">EEPROM</link> or <link url="http://en.wikipedia.org/wiki/Flash_memory">Flash</link>.</para>
+        <para id="id3472725">Finally, selection sort is greatly outperformed on larger arrays by Θ(nlog n) <link url="http://en.wikipedia.org/wiki/Divide-and-conquer_algorithm">divide-and-conquer</link> algorithms such as <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link> and <link url="http://en.wikipedia.org/wiki/Mergesort">mergesort</link>. However, insertion sort or selection sort are both typically faster for small arrays (ie less than 10-20 elements). A useful optimization in practice for the recursive algorithms is to switch to insertion sort or selection sort for "small enough" sublists.</para>
+      </section>
+      <section id="id-317332744843">
+        <title>Variants</title>
+        <para id="id3472788"><link url="http://en.wikipedia.org/wiki/Heapsort">Heapsort</link> greatly improves the basic algorithm by using an <link url="http://en.wikipedia.org/wiki/Implicit_Data_Structure">implicit</link><link url="http://en.wikipedia.org/wiki/Heap_%28data_structure%29">heap</link><link url="http://en.wikipedia.org/wiki/Data_structure">data structure</link> to speed up finding and removing the lowest datum. If implemented correctly, the heap will allow finding the next lowest element in Θ(log n) time instead of Θ(n) for the inner loop in normal selection sort, reducing the total running time to Θ(n  log n).</para>
+        <para id="id3472869">A bidirectional variant of selection sort, called <link url="http://en.wikipedia.org/wiki/Cocktail_sort">cocktail sort</link>, is an algorithm which finds both the minimum and maximum values in the list in every pass. This reduces the number of scans of the list by a factor of 2, eliminating some loop overhead but not actually decreasing the number of comparisons or swaps. Note, however, that cocktail sort more often refers to a bidirectional variant of bubble sort.</para>
+        <para id="id3472897">Selection sort can be implemented as a <link url="http://en.wikipedia.org/wiki/Stable_sort#Classification">stable sort</link>. If, rather than swapping in step 2, the minimum value is inserted into the first position (that is, all intervening items moved down), the algorithm is stable. However, this modification leads to Θ(n2 ) writes, eliminating the main advantage of selection sort over insertion sort, which is always stable.</para>
+        <section id="id-690003222823">
+          <title>6.1.3. Bubble sort</title>
+          <para id="id3472948">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3472958">Bubble sort is a simple <link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link>. It works by repeatedly stepping through the list to be sorted, comparing two items at a time and <link url="http://en.wikipedia.org/wiki/Swap">swapping</link> them if they are in the wrong order. The pass through the list is repeated until no swaps are needed, which means the list is sorted. The algorithm gets its name from the way smaller elements "bubble" to the top (i.e. the beginning) of the list via the swaps. (Another opinion: it gets its name from the way greater elements "bubble" to the end.) Because it only uses comparisons to operate on elements, it is a <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison sort</link>. This is the easiest comparison sort to implement.</para>
+          <para id="id3473012">A simple way to express bubble sort in <link url="http://en.wikipedia.org/wiki/Pseudocode">pseudocode</link> is as follows:</para>
+          <para id="id3473029">procedure bubbleSort( A : list of sortable items ) defined as:</para>
+          <para id="id3473054">do</para>
+          <para id="id3473067">swapped := false</para>
+          <para id="id3473078">for each i in 0 to length( A ) - 2 do:</para>
+          <para id="id3473117">if A[ i ] &gt; A[ i + 1 ] then</para>
+          <para id="id3473140">swap( A[ i ], A[ i + 1 ] )</para>
+          <para id="id3473150">swapped := true</para>
+          <para id="id3473161">end if</para>
+          <para id="id3473175">end for</para>
+          <para id="id3473188">while swapped</para>
+          <para id="id3473206">end procedure</para>
+          <para id="id3473214">The algorithm can also be expressed as:</para>
+          <para id="id3473219">procedure bubbleSort( A : list of sortable items ) defined as:</para>
+          <para id="id3473244">for each i in 1 to length(A) do:</para>
+          <para id="id3473283">for each j in length(A) downto i + 1 do:</para>
+          <para id="id3473322">if A[ j ] &lt; A[ j - 1 ] then</para>
+          <para id="id3473345">swap( A[ j ], A[ j - 1 ] )</para>
+          <para id="id3473358">end if</para>
+          <para id="id3473372">end for</para>
+          <para id="id3473385">end for</para>
+          <para id="id3473399">end procedure</para>
+          <para id="id3473407">This difference between this and the first pseudocode implementation is discussed <link url="http://en.wikipedia.org/wiki/Bubble_sort#Alternative_implementations">later in the article</link>.</para>
+        </section>
+      </section>
+      <section id="id-601691578453">
+        <title>Analysis</title>
+        <section id="id-405359679568">
+          <title>Best-case performance</title>
+          <para id="id3473454">Bubble sort has best-case complexity <link url="http://en.wikipedia.org/wiki/Big-O_notation">Ω</link>(n). When a list is already sorted, bubblesort will pass through the list once, and find that it does not need to swap any elements. Thus bubble sort will make only n comparisons and determine that list is completely sorted. It will also use considerably less time than О(n²) if the elements in the unsorted list are not too far from their sorted places. MKH...</para>
+        </section>
+        <section id="id-545811628688">
+          <title>Rabbits and turtles</title>
+          <para id="id3473510">The positions of the elements in bubble sort will play a large part in determining its performance. Large elements at the top of the list do not pose a problem, as they are quickly swapped downwards. Small elements at the bottom, however, as mentioned earlier, move to the top extremely slowly. This has led to these types of elements being named rabbits and turtles, respectively.</para>
+          <para id="id3473521">Various efforts have been made to eliminate turtles to improve upon the speed of bubble sort. <link url="http://en.wikipedia.org/wiki/Cocktail_sort">Cocktail sort</link> does pretty well, but it still retains O(n2) worst-case complexity. <link url="http://en.wikipedia.org/wiki/Comb_sort">Comb sort</link> compares elements large gaps apart and can move turtles extremely quickly, before proceeding to smaller and smaller gaps to smooth out the list. Its average speed is comparable to faster algorithms like <link url="http://en.wikipedia.org/wiki/Quicksort">Quicksort</link>.</para>
+        </section>
+        <section id="id-0483770365278">
+          <title>Alternative implementations</title>
+          <para id="id3473598">One way to optimize bubble sort is to note that, after each pass, the largest element will always move down to the bottom. During each comparison, it is clear that the largest element will move downwards. Given a list of size n, the nth element will be guaranteed to be in its proper place. Thus it suffices to sort the remaining n - 1 elements. Again, after this pass, the n - 1th element will be in its final place.</para>
+          <para id="id3473640">In <link url="http://en.wikipedia.org/wiki/Pseudocode">pseudocode</link>, this will cause the following change:</para>
+          <para id="id3473656">procedure bubbleSort( A : list of sortable items ) defined as:</para>
+          <para id="id3473681">n := length( A )</para>
+          <para id="id3473692">do</para>
+          <para id="id3473705">swapped := false</para>
+          <para id="id3473716">n := n - 1</para>
+          <para id="id3473726">for each i in 0 to n do:</para>
+          <para id="id3473765">if A[ i ] &gt; A[ i + 1 ] then</para>
+          <para id="id3473788">swap( A[ i ], A[ i + 1 ] )</para>
+          <para id="id3473799">swapped := true</para>
+          <para id="id3473809">end if</para>
+          <para id="id3473823">end for</para>
+          <para id="id3473837">while swapped</para>
+          <para id="id3473855">end procedure</para>
+          <para id="id3473862">We can then do bubbling passes over increasingly smaller parts of the list. More precisely, instead of doing n2 comparisons (and swaps), we can use only n + (n-1) + (n-2) + ... + 1 comparisons. This <link url="http://en.wikipedia.org/wiki/Arithmetic_progression">sums</link> up to n(n + 1) / 2, which is still O(n2), but which can be considerably faster in practice.</para>
+        </section>
+      </section>
+      <section id="id-148790239002">
+        <title>In practice</title>
+        <para id="id3473936">Although bubble sort is one of the simplest sorting algorithms to understand and implement, its O(n2) complexity means it is far too inefficient for use on lists having more than a few elements. Even among simple O(n2) sorting algorithms, algorithms like <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link> are usually considerably more efficient.</para>
+        <para id="id3473984">Due to its simplicity, bubble sort is often used to introduce the concept of an algorithm, or a sorting algorithm, to introductory <link url="http://en.wikipedia.org/wiki/Computer_science">computer science</link> students. However, some researchers such as Owen Astrachan have gone to great lengths to disparage bubble sort and its continued popularity in computer science education, recommending that it no longer even be taught. </para>
+        <para id="id3474006">The <link url="http://en.wikipedia.org/wiki/Jargon_file">Jargon file</link>, which famously calls <link url="http://en.wikipedia.org/wiki/Bogosort">bogosort</link> "the archetypical perversely awful algorithm", also calls bubble sort "the generic bad algorithm". <link url="http://en.wikipedia.org/wiki/Donald_Knuth">Donald Knuth</link>, in his famous <link url="http://en.wikipedia.org/wiki/The_Art_of_Computer_Programming">The Art of Computer Programming</link>, concluded that "the bubble sort seems to have nothing to recommend it, except a catchy name and the fact that it leads to some interesting theoretical problems", some of which he discusses therein.</para>
+        <para id="id3474088">Bubble sort is <link url="http://en.wikipedia.org/wiki/Asymptotic_notation">asymptotically</link> equivalent in running time to <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link> in the worst case, but the two algorithms differ greatly in the number of swaps necessary. Experimental results such as those of Astrachan have also shown that insertion sort performs considerably better even on random lists. For these reasons many modern algorithm textbooks avoid using the bubble sort algorithm in favor of insertion sort.</para>
+        <para id="id3474122">Bubble sort also interacts poorly with modern CPU hardware. It requires at least twice as many writes as insertion sort, twice as many cache misses, and asymptotically more <link url="http://en.wikipedia.org/wiki/Branch_prediction">branch mispredictions</link>. Experiments by Astrachan sorting strings in Java show bubble sort to be roughly 5 times slower than <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link> and 40% slower than <link url="http://en.wikipedia.org/wiki/Selection_sort">selection sort</link>.</para>
+      </section>
+      <section id="id-575807913455">
+        <title>6.2. Effectively sorting algorithms</title>
+        <section id="id-971083294232">
+          <title>6.2.1. Shell sort</title>
+          <para id="id3474194">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3474204">Shell sort is a <link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link> that is a generalization of <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>, with two observations:</para>
+          <list id="id3474237" list-type="bulleted">
+            <item>insertion sort is efficient if the input is "almost sorted", and</item>
+            <item>insertion sort is typically inefficient because it moves values just one position at a time.</item>
+          </list>
+        </section>
+      </section>
+      <section id="id-378946750947">
+        <title>Implementation</title>
+        <para id="id3474266">The original implementation performs <link url="http://en.wikipedia.org/wiki/Big_O_notation">Θ</link>(n2) comparisons and exchanges in the worst case. A minor change given in V. Pratt's book improved the bound to O(n log2 n). This is worse than the optimal <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison sorts</link>, which are O(n log n).</para>
+        <para id="id3474333">Shell sort improves insertion sort by comparing elements separated by a gap of several positions. This lets an element take "bigger steps" toward its expected position. Multiple passes over the data are taken with smaller and smaller gap sizes. The last step of Shell sort is a plain insertion sort, but by then, the array of data is guaranteed to be almost sorted.</para>
+        <para id="id3474343">Consider a small value that is initially stored in the wrong end of the <link url="http://en.wikipedia.org/wiki/Array">array</link>. Using an O(n2) sort such as <link url="http://en.wikipedia.org/wiki/Bubble_sort">bubble sort</link> or <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>, it will take roughly n comparisons and exchanges to move this value all the way to the other end of the array. Shell sort first moves values using giant step sizes, so a small value will move a long way towards its final position, with just a few comparisons and exchanges.</para>
+        <para id="id3474403">One can visualize Shellsort in the following way: arrange the list into a table and sort the columns (using an <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>). Repeat this process, each time with smaller number of longer columns. At the end, the table has only one column. While transforming the list into a table makes it easier to visualize, the algorithm itself does its sorting in-place (by incrementing the index by the step size, i.e. using i += step_size instead of i++).</para>
+        <para id="id3474438">For example, consider a list of numbers like [ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]. If we started with a step-size of 5, we could visualize this as breaking the list of numbers into a table with 5 columns. This would look like this:</para>
+        <para id="id3474470">13 14 94 33 82</para>
+        <para id="id3474475">25 59 94 65 23</para>
+        <para id="id3474479">45 27 73 25 39</para>
+        <para id="id3474484">10</para>
+        <para id="id3474488">We then sort each column, which gives us</para>
+        <para id="id3474493">10 14 73 25 23</para>
+        <para id="id3474498">13 27 94 33 39</para>
+        <para id="id3474502">25 59 94 65 82</para>
+        <para id="id3474507">45</para>
+        <para id="id3474511">When read back as a single list of numbers, we get [ 10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45 ]. Here, the 10 which was all the way at the end, has moved all the way to the beginning. This list is then again sorted using a 3-gap sort, and then 1-gap sort (simple insertion sort).</para>
+      </section>
+      <section id="id-63791228428">
+        <title>Gap sequence</title>
+        <para id="id3474544">
+          <figure id="id3474553"><media id="id1169430731882" alt=""><image src="../../media/Picture 92.png" mime-type="image/png" height="122" width="363"/></media>
+          <caption>The shellsort algorithm in action</caption></figure>
+        </para>
+        
+        <para id="id3474582">The gap sequence is an integral part of the shellsort algorithm. Any increment sequence will work, so long as the last element is 1. The algorithm begins by performing a gap insertion sort, with the gap being the first number in the gap sequence. It continues to perform a gap insertion sort for each number in the sequence, until it finishes with a gap of 1. When the gap is 1, the gap insertion sort is simply an ordinary <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>, guaranteeing that the final list is sorted.</para>
+        <para id="id3474617">The gap sequence that was originally suggested by <link url="http://en.wikipedia.org/wiki/Donald_Shell">Donald Shell</link> was to begin with N / 2 and to halve the number until it reaches 1. While this sequence provides significant performance enhancements over the <link url="http://en.wikipedia.org/wiki/Quadratic_growth">quadratic</link> algorithms such as <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link>, it can be changed slightly to further decrease the average and worst-case running times. Weiss' textbook<link url="http://en.wikipedia.org/wiki/Shell_sort#_note-3">[4]</link> demonstrates that this sequence allows a worst case O(n2) sort, if the data is initially in the array as (small_1, large_1, small_2, large_2, ...) - that is, the upper half of the numbers are placed, in sorted order, in the even index locations and the lower end of the numbers are placed similarly in the odd indexed locations.</para>
+        <para id="id3474712">Perhaps the most crucial property of Shellsort is that the elements remain k-sorted even as the gap diminishes. For instance, if a list was 5-sorted and then 3-sorted, the list is now not only 3-sorted, but both 5- and 3-sorted. If this were not true, the algorithm would undo work that it had done in previous iterations, and would not achieve such a low running time.</para>
+        <para id="id3474722">Depending on the choice of gap sequence, Shellsort has a proven worst-case running time of O(n2) (using Shell's increments that start with 1/2 the array size and divide by 2 each time), O(n3 / 2) (using Hibbard's increments of 2k − 1), O(n4 / 3) (using Sedgewick's increments of 9(4i) − 9(2i) + 1, or 4i + 1 + 3(2i) + 1), or O(nlog2n), and possibly unproven better running times. The existence of an O(nlogn) worst-case implementation of Shellsort remains an open research question.</para>
+        <para id="id3474922">The best known sequence is 1, 4, 10, 23, 57, 132, 301, 701. Such a Shell sort is faster than an <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link> and a <link url="http://en.wikipedia.org/wiki/Heap_sort">heap sort</link>, but if it is faster than a <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link> for small arrays (less than 50 elements), it is slower for bigger arrays. Next gaps can be computed for instance with :</para>
+        <para id="id3474967">nextgap = round(gap * 2.3)</para>
+      </section>
+      <section id="id-284577580566">
+        <title>Shell sort algorithm in C/C++</title>
+        <para id="id3474989">Shell sort is commonly used in <link url="http://en.wikipedia.org/wiki/Programming_language">programming languages</link>; this is an implementation of the algorithm in <link url="http://en.wikipedia.org/wiki/C_%28programming_language%29">C</link>/<link url="http://en.wikipedia.org/wiki/C%2B%2B">C++</link> for sorting an <link url="http://en.wikipedia.org/wiki/Array">array</link> of integers. The increment sequence used in this example code gives an <link url="http://en.wikipedia.org/wiki/Big-O_notation">O</link>(n2) worst-case running time.</para>
+        <para id="id3475059">void shell_sort(int A[], int size)</para>
+        <para id="id3475063">{</para>
+        <para id="id3475067">int i, j, increment, temp;</para>
+        <para id="id3475075">increment = size / 2;</para>
+        <para id="id3475086">while (increment &gt; 0)</para>
+        <para id="id3475094">{</para>
+        <para id="id3475101">for (i=increment; i &lt; size; i++)</para>
+        <para id="id3475109">{</para>
+        <para id="id3475116">j = i;</para>
+        <para id="id3475124">temp = A[i];</para>
+        <para id="id3475131">while ((j &gt;= increment) &amp;&amp; (A[j-increment] &gt; temp))</para>
+        <para id="id3475140">{</para>
+        <para id="id3475147">A[j] = A[j - increment];</para>
+        <para id="id3475155">j = j - increment;</para>
+        <para id="id3475162">}</para>
+        <para id="id3475170">A[j] = temp;</para>
+        <para id="id3475177">}</para>
+        <para id="id3475188">if (increment == 2)</para>
+        <para id="id3475196">increment = 1;</para>
+        <para id="id3475204">else </para>
+        <para id="id3475211">increment = (int) (increment / 2.2);</para>
+        <para id="id3475219">}</para>
+        <para id="id3475226">}</para>
+      </section>
+      <section id="id-0485654406358">
+        <title>Shell sort algorithm in Java</title>
+        <para id="id3475247">The <link url="http://en.wikipedia.org/wiki/Java_%28programming_language%29">Java</link> implementation of Shell sort is as follows:</para>
+        <para id="id3475265">public static void shellSort(int[] a) {</para>
+        <para id="id3475271">for ( int increment = a.length / 2;</para>
+        <para id="id3475278">increment &gt; 0;</para>
+        <para id="id3475286">increment = (increment == 2 ? 1 : (int) Math.round(increment / 2.2))) {</para>
+        <para id="id3475294">for (int i = increment; i &lt; a.length; i++) {</para>
+        <para id="id3475302">for (int j = i; j &gt;= increment &amp;&amp; a[j - increment] &gt; a[j]; j -= increment) {</para>
+        <para id="id3475312">int temp = a[j];</para>
+        <para id="id3475319">a[j] = a[j - increment];</para>
+        <para id="id3475327">a[j - increment] = temp;</para>
+        <para id="id3475335">}</para>
+        <para id="id3475342">}</para>
+        <para id="id3475349">}</para>
+        <para id="id3475356">}</para>
+      </section>
+      <section id="id-66174698149">
+        <title>Shell sort algorithm in Python</title>
+        <para id="id3475378">Here it is:</para>
+        <para id="id3475383">def shellsort(a):</para>
+        <para id="id3475388">def new_increment(a):</para>
+        <para id="id3475396">i = int(len(a) / 2)</para>
+        <para id="id3475404">yield i</para>
+        <para id="id3475411">while i != 1:</para>
+        <para id="id3475419">if i == 2:</para>
+        <para id="id3475426">i = 1</para>
+        <para id="id3475434">else: </para>
+        <para id="id3475441">i = int(numpy.round(i/2.2))</para>
+        <para id="id3475449">yield i</para>
+        <para id="id3475456">for increment in new_increment(a):</para>
+        <para id="id3475464">for i in xrange(increment, len(a)):</para>
+        <para id="id3475471">for j in xrange(i, increment-1, -increment):</para>
+        <para id="id3475479">if a[j - increment] &lt; a[j]:</para>
+        <para id="id3475487">break</para>
+        <para id="id3475494">temp = a[j];</para>
+        <para id="id3475502">a[j] = a[j - increment]</para>
+        <para id="id3475510">a[j - increment] = temp</para>
+        <para id="id3475518">return a</para>
+        <section id="id-178089655168">
+          <title>6.2.2. Heap sort</title>
+          <para id="id3475532">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3475542">Heapsort is a <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison-based</link><link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link>, and is part of the <link url="http://en.wikipedia.org/wiki/Selection_sort">selection sort</link> family. Although somewhat slower in practice on most machines than a good implementation of <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link>, it has the advantage of a worst-case <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n log n) runtime. Heapsort is an <link url="http://en.wikipedia.org/wiki/In-place_algorithm">in-place algorithm</link>, but is not a <link url="http://en.wikipedia.org/wiki/Stable_sort">stable sort</link>.</para>
+        </section>
+      </section>
+      <section id="id-582226970206">
+        <title>Overview</title>
+        <para id="id3475660">Heapsort inserts the input list elements into a <link url="http://en.wikipedia.org/wiki/Binary_heap">heap</link> data structure. The largest value (in a max-heap) or the smallest value (in a min-heap) are extracted until none remain, the values having been extracted in sorted order. The heap's invariant is preserved after each extraction, so the only cost is that of extraction.</para>
+        <para id="id3475681">During extraction, the only space required is that needed to store the heap. In order to achieve constant space overhead, the heap is stored in the part of the input array that has not yet been sorted. (The structure of this heap is described at <link url="http://en.wikipedia.org/wiki/Binary_heap#Heap_implementation">Binary heap: Heap implementation</link>.)</para>
+        <para id="id3475701">Heapsort uses two heap operations: insertion and root deletion. Each extraction places an element in the last empty location of the array. The remaining prefix of the array stores the unsorted elements.</para>
+      </section>
+      <section id="id-119865197181">
+        <title>Variations</title>
+        <list id="id3475737" list-type="bulleted">
+          <item>The most important variation to the simple variant is an improvement by R.W.Floyd which gives in practice about 25% speed improvement by using only one comparison in each <link url="http://en.wikipedia.org/wiki/Binary_heap#Adding_to_the_heap">siftup</link> run which then needs to be followed by a <link url="http://en.wikipedia.org/wiki/Binary_heap#Deleting_the_root_from_the_heap">siftdown</link> for the original child; moreover it is more elegant to formulate. Heapsort's natural way of indexing works on indices from 1 up to the number of items. Therefore the start address of the data should be shifted such that this logic can be implemented avoiding unnecessary +/- 1 offsets in the coded algorithm.</item>
+        </list>
+        <list id="id3475788" list-type="bulleted">
+          <item>Ternary heapsort uses a ternary heap instead of a binary heap; that is, each element in the heap has three children. It is more complicated to program, but does a constant number of times fewer swap and comparison operations. This is because each step in the shift operation of a ternary heap requires three comparisons and one swap, whereas in a binary heap two comparisons and one swap are required. The ternary heap does two steps in less time than the binary heap requires for three steps, which multiplies the index by a factor of 9 instead of the factor 8 of three binary steps. Ternary heapsort is about 12% faster than the simple variant of binary heapsort.[<link url="http://en.wikipedia.org/wiki/Wikipedia:Citing_sources">citation needed</link>]</item>
+        </list>
+        <list id="id3475830" list-type="bulleted">
+          <item>The smoothsort <link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link> is a variation of heapsort developed by <link url="http://en.wikipedia.org/wiki/Edsger_Dijkstra">Edsger Dijkstra</link> in <link url="http://en.wikipedia.org/wiki/1981">1981</link>. Like heapsort, smoothsort's upper bound is <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n log n). The advantage of smoothsort is that it comes closer to O(n) time if the input is already sorted to some degree, whereas heapsort averages O(n log n) regardless of the initial sorted state. Due to its complexity, smoothsort is rarely used.</item>
+        </list>
+      </section>
+      <section id="id-156486337775">
+        <title>Comparison with other sorts</title>
+        <para id="id3475975">Heapsort primarily competes with <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link>, another very efficient general purpose nearly-in-place comparison-based sort algorithm.</para>
+        <para id="id3475992">Quicksort is typically somewhat faster, due to better cache behavior and other factors, but the worst-case running time for quicksort is <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n2), which is unacceptable for large data sets and can be deliberately triggered given enough knowledge of the implementation, creating a security risk. See <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link> for a detailed discussion of this problem, and possible solutions.</para>
+        <para id="id3476035">Thus, because of the O(n log n) upper bound on heapsort's running time and constant upper bound on its auxiliary storage, embedded systems with real-time constraints or systems concerned with security often use heapsort.</para>
+        <para id="id3476054">Heapsort also competes with <link url="http://en.wikipedia.org/wiki/Merge_sort">merge sort</link>, which has the same time bounds, but requires Ω(n) auxiliary space, whereas heapsort requires only a constant amount. Heapsort also typically runs more quickly in practice on machines with small or slow <link url="http://en.wikipedia.org/wiki/Data_cache">data caches</link>. On the other hand, merge sort has several advantages over heapsort:</para>
+        <list id="id3476089" list-type="bulleted">
+          <item>Like quicksort, merge sort on arrays has considerably better data cache performance, often outperforming heapsort on a modern desktop PC, because it accesses the elements in order.</item>
+          <item>Merge sort is a <link url="http://en.wikipedia.org/wiki/Stable_sort">stable sort</link>.</item>
+          <item>Merge sort <link url="http://en.wikipedia.org/wiki/Parallel_algorithm">parallelizes better</link>; the most trivial way of parallelizing merge sort achieves close to <link url="http://en.wikipedia.org/wiki/Linear_speedup">linear speedup</link>, while there is no obvious way to parallelize heapsort at all.</item>
+          <item>Merge sort can be easily adapted to operate on <link url="http://en.wikipedia.org/wiki/Linked_list">linked lists</link> and very large lists stored on slow-to-access media such as <link url="http://en.wikipedia.org/wiki/Disk_storage">disk storage</link> or <link url="http://en.wikipedia.org/wiki/Network_attached_storage">network attached storage</link>. Heapsort relies strongly on <link url="http://en.wikipedia.org/wiki/Random_access">random access</link>, and its poor <link url="http://en.wikipedia.org/wiki/Locality_of_reference">locality of reference</link> makes it very slow on media with long access times.</item>
+        </list>
+        <para id="id3476252">An interesting alternative to Heapsort is <link url="http://en.wikipedia.org/wiki/Introsort">Introsort</link> which combines quicksort and heapsort to retain advantages of both: worst case speed of heapsort and average speed of quicksort.</para>
+      </section>
+      <section id="id-294074784503">
+        <title>Pseudocode</title>
+        <para id="id3476282">The following is the "simple" way to implement the algorithm, in pseudocode, where swap is used to swap two elements of the array. Notice that the arrays are <link url="http://en.wikipedia.org/wiki/Zero-based_array">zero based</link> in this example.</para>
+        <para id="id3476306">function heapSort(a, count) is</para>
+        <para id="id3476327">input: an unordered array a of length count</para>
+        <para id="id3476360">(first place a in max-heap order)</para>
+        <para id="id3476373">heapify(a, count)</para>
+        <para id="id3476382">end := count - 1</para>
+        <para id="id3476390">while end &gt; 0 do</para>
+        <para id="id3476412">(swap the root(maximum value) of the heap with the last element of the heap)</para>
+        <para id="id3476427">swap(a[end], a[0])</para>
+        <para id="id3476434">(decrease the size of the heap by one so that the previous max value will</para>
+        <para id="id3476449">stay in its proper placement)</para>
+        <para id="id3476462">end := end - 1</para>
+        <para id="id3476470">(put the heap back in max-heap order)</para>
+        <para id="id3476484">siftDown(a, 0, end)</para>
+        <para id="id3476493">function heapify(a,count) is</para>
+        <para id="id3476513">(start is assigned the index in a of the last parent node)</para>
+        <para id="id3476527">start := count ÷ 2 - 1</para>
+        <para id="id3476539">while start ≥ 0 do</para>
+        <para id="id3476561">(sift down the node at index start to the proper place such that all nodes below</para>
+        <para id="id3476576">the start index are in heap order)</para>
+        <para id="id3476590">siftDown(a, start, count-1)</para>
+        <para id="id3476598">start := start - 1</para>
+        <para id="id3476606">(after sifting down the root all nodes/elements are in heap order)</para>
+        <para id="id3476621">function siftDown(a, start, end) is</para>
+        <para id="id3476642">input: end represents the limit of how far down the heap</para>
+        <para id="id3476664">to sift.</para>
+        <para id="id3476678">root := start</para>
+        <para id="id3476686">while root * 2 + 1 ≤ end do (While the root has at least one child)</para>
+        <para id="id3476720">child := root * 2 + 1 (root*2+1 points to the left child)</para>
+        <para id="id3476738">(If the child has a sibling and the child's value is less than its sibling's...)</para>
+        <para id="id3476753">if child &lt; end and a[child] &lt; a[child + 1] then</para>
+        <para id="id3476785">child := child + 1 (... then point to the right child instead)</para>
+        <para id="id3476804">if a[root] &lt; a[child] then (out of max-heap order)</para>
+        <para id="id3476838">swap(a[root], a[child])</para>
+        <para id="id3476846">root := child (repeat to continue sifting down the child now)</para>
+        <para id="id3476865">else</para>
+        <para id="id3476878">return</para>
+        <para id="id3476892">The heapify function can be thought of as successively inserting into the heap and sifting up. The two versions only differ in the order of data processing. The above heapify function starts at the bottom and moves up while sifting down (bottom-up). The following heapify function starts at the top and moves down while sifting up (top-down).</para>
+        <para id="id3476902">function heapify(a,count) is</para>
+        <para id="id3476918">(end is assigned the index of the first (left) child of the root)</para>
+        <para id="id3476933">end := 1</para>
+        <para id="id3476943">while end &lt; count</para>
+        <para id="id3476961">(sift up the node at index end to the proper place such that all nodes above</para>
+        <para id="id3476976">the end index are in heap order)</para>
+        <para id="id3476990">siftUp(a, 0, end)</para>
+        <para id="id3476998">end := end + 1</para>
+        <para id="id3477006">(after sifting up the last node all nodes are in heap order)</para>
+        <para id="id3477021">function siftUp(a, start, end) is</para>
+        <para id="id3477042">input: start represents the limit of how far up the heap to sift.</para>
+        <para id="id3477065">end is the node to sift up.</para>
+        <para id="id3477078">child := end </para>
+        <para id="id3477086">while child &gt; start</para>
+        <para id="id3477104">parent := ⌊(child - 1) ÷ 2⌋</para>
+        <para id="id3477128">if a[parent] &lt; a[child] then (out of max-heap order)</para>
+        <para id="id3477160">swap(a[parent], a[child])</para>
+        <para id="id3477167">child := parent (repeat to continue sifting up the parent now)</para>
+        <para id="id3477183">else</para>
+        <para id="id3477197">return</para>
+        <para id="id3477210">It can be shown that both variants of heapify run in O(n) time.[<link url="http://en.wikipedia.org/wiki/Wikipedia:Citing_sources">citation needed</link>]</para>
+      </section>
+      <section id="id-414913223311">
+        <title>C-code</title>
+        <para id="id3477258">Below is an implementation of the "standard" heapsort (also called bottom-up-heapsort). It is faster on average (see Knuth. Sec. 5.2.3, Ex. 18) and even better in worst-case behavior (1.5n log n) than the simple heapsort (2n log n). The sift_in routine is first a sift_up of the free position followed by a sift_down of the new item. The needed data-comparison is only in the macro data_i_LESS_THAN_ for easy adaption.</para>
+        <para id="id3477290">This code is flawed - see <link url="http://en.wikipedia.org/wiki/Talk:Heapsort">talk page</link></para>
+        <para id="id3477306">/* Heapsort based on ideas of J.W.Williams/R.W.Floyd/S.Carlsson */</para>
+        <para id="id3477319">#define data_i_LESS_THAN_(other) (data[i] &lt; other)</para>
+        <para id="id3477338">#define MOVE_i_TO_free { data[free]=data[i]; free=i; }</para>
+        <para id="id3477358">void sift_in(unsigned count, SORTTYPE *data, unsigned free_in, SORTTYPE next)</para>
+        <para id="id3477401">{</para>
+        <para id="id3477412">unsigned i;</para>
+        <para id="id3477432">unsigned free = free_in;</para>
+        <para id="id3477459">// sift up the free node </para>
+        <para id="id3477472">for (i=2*free;i&lt;count;i+=i)</para>
+        <para id="id3477520">{ if (data_i_LESS_THAN_(data[i+1])) i++;</para>
+        <para id="id3477587">MOVE_i_TO_free</para>
+        <para id="id3477595">}</para>
+        <para id="id3477608">// special case in sift up if the last inner node has only 1 child</para>
+        <para id="id3477623">if (i==count)</para>
+        <para id="id3477653">MOVE_i_TO_free</para>
+        <para id="id3477660">// sift down the new item next </para>
+        <para id="id3477674">while( ((i=free/2)&gt;=free_in) &amp;&amp; data_i_LESS_THAN_(next))</para>
+        <para id="id3477753">MOVE_i_TO_free</para>
+        <para id="id3477761">data[free] = next;</para>
+        <para id="id3477788">}</para>
+        <para id="id3477801">void heapsort(unsigned count, SORTTYPE *data)</para>
+        <para id="id3477834">{</para>
+        <para id="id3477845">unsigned j;</para>
+        <para id="id3477866">if (count &lt;= 1) return;</para>
+        <para id="id3477914">data-=1; // map addresses to indices 1 til count</para>
+        <para id="id3477941">// build the heap structure </para>
+        <para id="id3477955">for(j=count / 2; j&gt;=1; j--) {</para>
+        <para id="id3478006">SORTTYPE next = data[j];</para>
+        <para id="id3478035">sift_in(count, data, j, next);</para>
+        <para id="id3478063">}</para>
+        <para id="id3478077">// search next by next remaining extremal element</para>
+        <para id="id3478092">for(j= count - 1; j&gt;=1; j--) {</para>
+        <para id="id3478143">SORTTYPE next = data[j + 1];</para>
+        <para id="id3478175">data[j + 1] = data[1]; // extract extremal element from the heap</para>
+        <para id="id3478231">sift_in(j, data, 1, next);</para>
+        <para id="id3478267">}</para>
+        <para id="id3478280">}</para>
+        <section id="id-96836492404">
+          <title>6.2.3. Quicksort</title>
+          <para id="id3478296">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3478306">Quicksort is a well-known <link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link> developed by <link url="http://en.wikipedia.org/wiki/C._A._R._Hoare">C. A. R. Hoare</link> that, <link url="http://en.wikipedia.org/wiki/Average_performance">on average</link>, makes <media id="id1169425969759" alt=""><image src="../../media/Picture 327.png" mime-type="image/png" height="17" width="78"/></media> (<link url="http://en.wikipedia.org/wiki/Big_O_notation">big O notation</link>) comparisons to sort n items. However, in the <link url="http://en.wikipedia.org/wiki/Worst-case_performance">worst case</link>, it makes Θ(n2) comparisons. Typically, quicksort is significantly faster in practice than other <media id="id4651255" alt=""><image src="../../media/Picture 328.png" mime-type="image/png" height="16" width="74"/></media> algorithms, because its inner loop can be efficiently implemented on most architectures, and in most real-world data it is possible to make design choices which minimize the possibility of requiring quadratic time.</para>
+          <para id="id3478461">Quicksort is a <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison sort</link> and is not a <link url="http://en.wikipedia.org/wiki/Sorting_algorithm#Classification">stable sort</link>.</para>
+        </section>
+      </section>
+      <section id="id-241873715656">
+        <title>The algorithm</title>
+        <para id="id3478502">Quicksort sorts by employing a <link url="http://en.wikipedia.org/wiki/Divide_and_conquer_algorithm">divide and conquer</link> strategy to divide a <link url="http://en.wikipedia.org/wiki/List_%28computing%29">list</link> into two sub-lists.</para>
+        <para id="id3478531">The steps are:</para>
+        <list id="id3478536" list-type="enumerated">
+          <item>Pick an element, called a <link url="http://en.wikipedia.org/wiki/Pivot_element">pivot</link>, from the list.</item>
+          <item>Reorder the list so that all elements which are less than the pivot come before the pivot and so that all elements greater than the pivot come after it (equal values can go either way). After this partitioning, the pivot is in its final position. This is called the partition operation.</item>
+          <item><link url="http://en.wikipedia.org/wiki/Recursion">Recursively</link> sort the sub-list of lesser elements and the sub-list of greater elements.</item>
+        </list>
+        <para id="id3478605">The <link url="http://en.wikipedia.org/wiki/Base_case#Recursive_programming">base case</link> of the recursion are lists of size zero or one, which are always sorted. The algorithm always terminates because it puts at least one element in its final place on each iteration (the loop invariant).</para>
+        <para id="id3478625">In simple <link url="http://en.wikipedia.org/wiki/Pseudocode">pseudocode</link>, the algorithm might be expressed as:</para>
+        <para id="id3478641">function quicksort(array)</para>
+        <para id="id3478658">var list less, pivotList, greater</para>
+        <para id="id3478684">if length(array) ≤ 1 </para>
+        <para id="id3478703">return array </para>
+        <para id="id3478722">select a pivot value pivot from array</para>
+        <para id="id3478742">for each x in array</para>
+        <para id="id3478768">if x &lt; pivot then add x to less</para>
+        <para id="id3478795">if x = pivot then add x to pivotList</para>
+        <para id="id3478822">if x &gt; pivot then add x to greater</para>
+        <para id="id3478849">return concatenate(quicksort(less), pivotList, quicksort(greater))</para>
+        <para id="id3478868">Notice that we only examine elements by comparing them to other elements. This makes quicksort a <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison sort</link>.</para>
+        <section id="id-552021880875">
+          <title>Version with in-place partition</title>
+          <para id="id3478902">
+            <figure id="id3478911"><media id="id1169431172704" alt=""><image src="../../media/Picture 330.png" mime-type="image/png" height="254" width="209"/></media>
+            <caption>Partition</caption></figure>
+          </para>
+          
+          <para id="id3478940">In-place partition in action on a small list. The boxed element is the pivot element, blue elements are less or equal, and red elements are larger.</para>
+          <para id="id3478946">The disadvantage of the simple version above is that it requires Ω(n) extra storage space, which is as bad as <link url="http://en.wikipedia.org/wiki/Mergesort">mergesort</link> (see <link url="http://en.wikipedia.org/wiki/Big-O_notation">big-O notation</link> for the meaning of Ω). The additional memory allocations required can also drastically impact speed and cache performance in practical implementations. There is a more complicated version which uses an <link url="http://en.wikipedia.org/wiki/In-place">in-place</link> partition algorithm and can achieve O(log n) space use on average for good pivot choices:</para>
+          <para id="id3479010">function partition(array, left, right, pivotIndex)</para>
+          <para id="id3479029">pivotValue := array[pivotIndex]</para>
+          <para id="id3479036">swap( array, pivotIndex, right) // Move pivot to end</para>
+          <para id="id3479051">storeIndex := left - 1</para>
+          <para id="id3479059">for i from left to right-1</para>
+          <para id="id3479096">if array[i] &lt;= pivotValue</para>
+          <para id="id3479114">storeIndex := storeIndex + 1</para>
+          <para id="id3479121">swap( array, storeIndex, i)</para>
+          <para id="id3479129">swap( array, right, storeIndex+1) // Move pivot to its final place</para>
+          <para id="id3479143">return storeIndex+1</para>
+          <para id="id3479161">This form of the partition algorithm is not the original form; multiple variations can be found in various textbooks, such as versions not having the storeIndex. However, this form is probably the easiest to understand.</para>
+          <para id="id3479169">This is the in-place partition algorithm. It partitions the portion of the array between indexes left and right, inclusively, by moving all elements less than or equal to a[pivotIndex] to the beginning of the subarray, leaving all the greater elements following them. In the process it also finds the final position for the pivot element, which it returns. It temporarily moves the pivot element to the end of the subarray, so that it doesn't get in the way. Because it only uses exchanges, the final list has the same elements as the original list. Notice that an element may be exchanged multiple times before reaching its final place.</para>
+          <para id="id3479201">Once we have this, writing quicksort itself is easy:</para>
+          <para id="id3479206">function quicksort(array, left, right)</para>
+          <para id="id3479222">if right &gt; left</para>
+          <para id="id3479240">select a pivot index (e.g. pivotIndex := left)</para>
+          <para id="id3479248">pivotNewIndex := partition(array, left, right, pivotIndex)</para>
+          <para id="id3479257">quicksort(array, left, pivotNewIndex-1)</para>
+          <para id="id3479265">quicksort(array, pivotNewIndex+1, right)</para>
+        </section>
+        <section id="id-637380488458">
+          <title>Parallelization</title>
+          <para id="id3479291">Like <link url="http://en.wikipedia.org/wiki/Mergesort">mergesort</link>, quicksort can also be easily <link url="http://en.wikipedia.org/wiki/Parallel_algorithm">parallelized</link> due to its divide-and-conquer nature. Individual in-place partition operations are difficult to parallelize, but once divided, different sections of the list can be sorted in parallel. If we have p processors, we can divide a list of n elements into p sublists in Θ(n) average time, then sort each of these in <media id="id8068738" alt=""><image src="../../media/Picture 333.png" mime-type="image/png" height="32" width="76"/></media>average time. Ignoring the O(n) preprocessing, this is <link url="http://en.wikipedia.org/wiki/Linear_speedup">linear speedup</link>. Given Θ(n) processors, only O(n) time is required overall.</para>
+          <para id="id3479423">One advantage of parallel quicksort over other parallel sort algorithms is that no synchronization is required. A new thread is started as soon as a sublist is available for it to work on and it does not communicate with other threads. When all threads complete, the sort is done.</para>
+          <para id="id3479432">Other more sophisticated parallel sorting algorithms can achieve even better time bounds. For example, in 1991 David Powers described a parallelized quicksort that can operate in O(log n) time given enough processors by performing partitioning implicitly<link url="http://en.wikipedia.org/wiki/Quick_sort#_note-0">[1]</link>.</para>
+        </section>
+      </section>
+      <section id="id-0506648420233">
+        <title>Formal analysis</title>
+        <para id="id3479476">From the initial description it's not obvious that quicksort takes O(n log n)time on average. It's not hard to see that the partition operation, which simply loops over the elements of the array once, uses Θ(n) time. In versions that perform concatenation, this operation is also Θ(n).</para>
+        <para id="id3479519">In the best case, each time we perform a partition we divide the list into two nearly equal pieces. This means each recursive call processes a list of half the size. Consequently, we can make only (log n) nested calls before we reach a list of size 1. This means that the depth of the <link url="http://en.wikipedia.org/wiki/Call_stack">call tree</link> is O(log n). But no two calls at the same level of the call tree process the same part of the original list; thus, each level of calls needs only O(n) time all together (each call has some constant overhead, but since there are only O(n) calls at each level, this is subsumed in the O(n) factor). The result is that the algorithm uses only O(n log n) time.</para>
+        <para id="id3479579">An alternate approach is to set up a <link url="http://en.wikipedia.org/wiki/Recurrence_relation">recurrence relation</link> for T(n) factor), the time needed to sort a list of size n. Because a single quicksort call involves O(n) factor) work plus two recursive calls on lists of size n/2 in the best case, the relation would be:</para>
+        <figure id="id3479633">
+          <media id="id1169416419638" alt=""><image src="../../media/Picture 346.png" mime-type="image/png" height="30" width="163"/></media>
+        </figure>
+        <para id="id3479657">The <link url="http://en.wikipedia.org/wiki/Master_theorem">master theorem</link> tells us that <media id="id1169414672274" alt=""><image src="../../media/Picture 347.png" mime-type="image/png" height="13" width="111"/></media>.</para>
+        <para id="id3479702">In fact, it's not necessary to divide the list this precisely; even if each pivot splits the elements with 99% on one side and 1% on the other (or any other fixed fraction), the call depth is still limited to (100log n), so the total running time is still O(n log n).</para>
+        <para id="id3479721">In the worst case, however, the two sublists have size 1 and n − 1, and the call tree becomes a linear chain of n nested calls. The ith call does <media id="id1169422221110" alt=""><image src="../../media/Picture 350.png" mime-type="image/png" height="13" width="51"/></media>work, and <media id="id1169431189593" alt=""><image src="../../media/Picture 351.png" mime-type="image/png" height="38" width="111"/></media>. The recurrence relation is:</para>
+        <figure id="id3479809">
+          <media id="id1169428882342" alt=""><image src="../../media/Picture 352.png" mime-type="image/png" height="16" width="368"/></media>
+        </figure>
+        <para id="id3479833">This is the same relation as for <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link> and <link url="http://en.wikipedia.org/wiki/Selection_sort">selection sort</link>, and it solves to T(n) = Θ(n2).</para>
+        <section id="id-91309462378">
+          <title>Randomized quicksort expected complexity</title>
+          <para id="id3479908">Randomized quicksort has the desirable property that it requires only O(n log n)<link url="http://en.wikipedia.org/wiki/Expected_value">expected</link> time, regardless of the input. But what makes random pivots a good choice?</para>
+          <para id="id3479930">Suppose we sort the list and then divide it into four parts. The two parts in the middle will contain the best pivots; each of them is larger than at least 25% of the elements and smaller than at least 25% of the elements. If we could consistently choose an element from these two middle parts, we would only have to split the list at most 2log2n times before reaching lists of size 1, yielding an O(n log n) algorithm.</para>
+          <para id="id3479961">Unfortunately, a random choice will only choose from these middle parts half the time. The surprising fact is that this is good enough. Imagine that you are flipping a coin over and over until you get k heads. Although this could take a long time, on average only 2k flips are required, and the chance that you won't get k heads after 100k flips is infinitesimally small. By the same argument, quicksort's recursion will terminate on average at a call depth of only 2log2n. But if its average call depth is O(log n), and each level of the call tree processes at most n elements, the total amount of work done on average is the product, O(n log n).</para>
+        </section>
+        <section id="id-967895640176">
+          <title>Average complexity</title>
+          <para id="id3480046">Even if we aren't able to choose pivots randomly, quicksort still requires only O(n log n) time over all possible permutations of its input. Because this average is simply the sum of the times over all permutations of the input divided by n factorial, it's equivalent to choosing a random permutation of the input. When we do this, the pivot choices are essentially random, leading to an algorithm with the same running time as randomized quicksort.</para>
+          <para id="id3480068">More precisely, the average number of comparisons over all permutations of the input sequence can be estimated accurately by solving the recurrence relation:</para>
+          <figure id="id3480078">
+            <media id="id1169424288223" alt=""><image src="../../media/Picture 362.png" mime-type="image/png" height="41" width="420"/></media>
+          </figure>
+          <para id="id3480102">Here, n − 1 is the number of comparisons the partition uses. Since the pivot is equally likely to fall anywhere in the sorted list order, the sum is averaging over all possible splits.</para>
+          <para id="id3480120">This means that, on average, quicksort performs only about 39% worse than the ideal number of comparisons, which is its best case. In this sense it is closer to the best case than the worst case. This fast average runtime is another reason for quicksort's practical dominance over other sorting algorithms.</para>
+          <para id="id3480129">C(n) = (n-1) + C(n/2) + C(n/2)</para>
+          <para id="id3480134">= (n-1) + 2C(n/2)</para>
+          <para id="id3480142">= (n-1) + 2((n/2) - 1 + 2C(n/4))</para>
+          <para id="id3480150">= n + n + 4C(n/4) - 1 - 2</para>
+          <para id="id3480157">= n + n + n + 8C(n/8) - 1 - 2 - 4</para>
+          <para id="id3480165">= ...</para>
+          <para id="id3480173">= kn + 2^kC(n/(2^k)) - (1 + 2 + 4 + . . . . . + 2^(k-1))</para>
+          <para id="id3480181">where log2n &gt; k &gt; 0</para>
+          <para id="id3480200">= kn + 2^kC(n/(2^k)) - 2^k + 1</para>
+          <para id="id3480208">-&gt; nlog2n + nC(1) - n + 1.</para>
+        </section>
+        <section id="id-975393491087">
+          <title>Space complexity</title>
+          <para id="id3480246">The space used by quicksort depends on the version used.</para>
+          <para id="id3480251">Quicksort has a space complexity of O(log n), even in the worst case, when it is carefully implemented such that</para>
+          <list id="id3480262" list-type="bulleted">
+            <item>in-place partitioning is used. This requires O(1).</item>
+            <item>After partitioning, the partition with the fewest elements is (recursively) sorted first, requiring at most O(log n) space. Then the other partition is sorted using tail-recursion or iteration. </item>
+          </list>
+          <para id="id3480304">The version of quicksort with in-place partitioning uses only constant additional space before making any recursive call. However, if it has made O(log n) nested recursive calls, it needs to store a constant amount of information from each of them. Since the best case makes at most O(log n) nested recursive calls, it uses O(log n) space. The worst case makes O(n) nested recursive calls, and so needs O(n) space.</para>
+          <para id="id3480342">We are eliding a small detail here, however. If we consider sorting arbitrarily large lists, we have to keep in mind that our variables like left and right can no longer be considered to occupy constant space; it takes O(log n) bits to index into a list of n items. Because we have variables like this in every stack frame, in reality quicksort requires O(log2n) bits of space in the best and average case and O(n log n) space in the worst case. This isn't too terrible, though, since if the list contains mostly distinct elements, the list itself will also occupy O(log n) bits of space.</para>
+          <para id="id3480404">The not-in-place version of quicksort uses O(n) space before it even makes any recursive calls. In the best case its space is still limited to O(n), because each level of the recursion uses half as much space as the last, and</para>
+          <figure id="id3480426">
+            <media id="id1169430881562" alt=""><image src="../../media/Picture 377.png" mime-type="image/png" height="50" width="102"/></media>
+          </figure>
+          <para id="id3480450">Its worst case is dismal, requiring</para>
+          <figure id="id3480458">
+            <media id="id1169425347271" alt=""><image src="../../media/Picture 378.png" mime-type="image/png" height="46" width="180"/></media>
+          </figure>
+          <para id="id3480482">space, far more than the list itself. If the list elements are not themselves constant size, the problem grows even larger; for example, if most of the list elements are distinct, each would require about O(log n) bits, leading to a best-case O(n log n) and worst-case O(n2 log n) space requirement.</para>
+        </section>
+      </section>
+      <section id="id-295611807669">
+        <title>Selection-based pivoting</title>
+        <para id="id3480535">A <link url="http://en.wikipedia.org/wiki/Selection_algorithm">selection algorithm</link> chooses the kth smallest of a list of numbers; this is an easier problem in general than sorting. One simple but effective selection algorithm works nearly in the same manner as quicksort, except that instead of making recursive calls on both sublists, it only makes a single tail-recursive call on the sublist which contains the desired element. This small change lowers the average complexity to linear or Θ(n) time, and makes it an <link url="http://en.wikipedia.org/wiki/In-place_algorithm">in-place algorithm</link>. A variation on this algorithm brings the worst-case time down to O(n) (see <link url="http://en.wikipedia.org/wiki/Selection_algorithm">selection algorithm</link> for more information).</para>
+        <para id="id3480610">Conversely, once we know a worst-case O(n) selection algorithm is available, we can use it to find the ideal pivot (the median) at every step of quicksort, producing a variant with worst-case O(n log n) running time. In practical implementations, however, this variant is considerably slower on average.</para>
+      </section>
+      <section id="id-368093436926">
+        <title>Competitive sorting algorithms</title>
+        <para id="id3480649">Quicksort is a space-optimized version of the <link url="http://en.wikipedia.org/wiki/Binary_tree_sort">binary tree sort</link>. Instead of inserting items sequentially into an explicit tree, quicksort organizes them concurrently into a tree that is implied by the recursive calls. The algorithms make exactly the same comparisons, but in a different order.</para>
+        <para id="id3480670">The most direct competitor of quicksort is <link url="http://en.wikipedia.org/wiki/Heapsort">heapsort</link>. Heapsort is typically somewhat slower than quicksort, but the worst-case running time is always <link url="http://en.wikipedia.org/wiki/Big_O_notation">O(</link><link url="http://en.wikipedia.org/wiki/Big_O_notation">n</link><link url="http://en.wikipedia.org/wiki/Big_O_notation"> log </link><link url="http://en.wikipedia.org/wiki/Big_O_notation">n</link><link url="http://en.wikipedia.org/wiki/Big_O_notation">)</link>. Quicksort is usually faster, though there remains the chance of worst case performance except in the <link url="http://en.wikipedia.org/wiki/Introsort">introsort</link> variant. If it's known in advance that heapsort is going to be necessary, using it directly will be faster than waiting for introsort to switch to it. Heapsort also has the important advantage of using only constant additional space (heapsort is in-place), whereas even the best variant of quicksort uses Θ(log n) space. However, heapsort requires efficient random access to be practical.</para>
+        <para id="id3480771">Quicksort also competes with <link url="http://en.wikipedia.org/wiki/Mergesort">mergesort</link>, another recursive sort algorithm but with the benefit of worst-case O(n log n) running time. Mergesort is a <link url="http://en.wikipedia.org/wiki/Stable_sort">stable sort</link>, unlike quicksort and heapsort, and can be easily adapted to operate on <link url="http://en.wikipedia.org/wiki/Linked_list">linked lists</link> and very large lists stored on slow-to-access media such as <link url="http://en.wikipedia.org/wiki/Disk_storage">disk storage</link> or <link url="http://en.wikipedia.org/wiki/Network_attached_storage">network attached storage</link>. Although quicksort can be written to operate on linked lists, it will often suffer from poor pivot choices without random access. The main disadvantage of mergesort is that, when operating on arrays, it requires Ω(n) auxiliary space in the best case, whereas the variant of quicksort with in-place partitioning and tail recursion uses only O(log n) space. (Note that when operating on linked lists, mergesort only requires a small, constant amount of auxiliary storage.)</para>
+        <section id="id-778758654631">
+          <title>6.2.4. Merge sort</title>
+          <para id="id3480911">(From Wikipedia, the free encyclopedia)</para>
+          <para id="id3480921">In <link url="http://en.wikipedia.org/wiki/Computer_science">computer science</link>, merge sort or mergesort is an <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n log n) <link url="http://en.wikipedia.org/wiki/Comparison_sort">comparison-based</link><link url="http://en.wikipedia.org/wiki/Sorting_algorithm">sorting algorithm</link>. It is <link url="http://en.wikipedia.org/wiki/Sorting_algorithm#Classification">stable</link>, meaning that it preserves the input order of equal elements in the sorted output. It is an example of the <link url="http://en.wikipedia.org/wiki/Divide_and_conquer_algorithm">divide and conquer</link> algorithmic paradigm. It was invented by <link url="http://en.wikipedia.org/wiki/John_von_Neumann">John von Neumann</link> in <link url="http://en.wikipedia.org/wiki/1945">1945</link>.</para>
+          <para id="id3481045">
+            <figure id="id3481054"><media id="id1169424305078" alt=""><image src="../../media/Picture 448.jpg" mime-type="image/jpeg" height="361" width="290"/></media>
+            <caption>Merge sort</caption></figure>
+          </para>
+          
+          <para id="id3481083">A merge sort algorithm used to sort an array of 7 integer values. These are the steps a human would take to emulate merge sort.</para>
+        </section>
+      </section>
+      <section id="id-312271213881">
+        <title>Algorithm</title>
+        <para id="id3481108">Conceptually, merge sort works as follows:</para>
+        <list id="id3481113" list-type="enumerated">
+          <item>Divide the unsorted list into two sublists of about half the size</item>
+          <item>Divide each of the two sublists <link url="http://en.wikipedia.org/wiki/Recursion">recursively</link> until we have list sizes of length 1, in which case the list itself is returned</item>
+          <item><link url="http://en.wikipedia.org/wiki/Merge_algorithm">Merge</link> the two sublists back into one sorted list.</item>
+        </list>
+        <para id="id3486596">Mergesort incorporates two main ideas to improve its runtime:</para>
+        <list id="id3486601" list-type="enumerated">
+          <item>A small list will take fewer steps to sort than a large list.</item>
+          <item>Fewer steps are required to construct a sorted list from two sorted lists than two unsorted lists. For example, you only have to traverse each list once if they're already sorted (see the <link url="http://en.wikipedia.org/wiki/Merge_algorithm">merge</link> function below for an example implementation).</item>
+        </list>
+        <para id="id3486638">Example: Using mergesort to sort a list of integers contained in an <link url="http://en.wikipedia.org/wiki/Array">array</link>:</para>
+        <para id="id3486655">Suppose we have an array A with indices ranging from A’first to A’Last. We apply mergesort to A(A’first..A’centre) and A(centre+1..A’Last) - where centre is the integer part of (A’first + A’Last)/2. When the two halves are returned they will have been sorted. They can now be merged together to form a sorted array.</para>
+        <para id="id3486670">In a simple <link url="http://en.wikipedia.org/wiki/Pseudocode">pseudocode</link> form, the algorithm could look something like this:</para>
+        <para id="id3486687">function mergesort(m)</para>
+        <para id="id3486699">var list left, right, result</para>
+        <para id="id3486726">if length(m) ≤ 1</para>
+        <para id="id3486744">return m</para>
+        <para id="id3486762">else</para>
+        <para id="id3486775">var middle = length(m) / 2</para>
+        <para id="id3486793">for each x in m up to middle</para>
+        <para id="id3486828">add x to left</para>
+        <para id="id3486836">for each x in m after middle</para>
+        <para id="id3486871">add x to right</para>
+        <para id="id3486878">left = mergesort(left)</para>
+        <para id="id3486886">right = mergesort(right)</para>
+        <para id="id3486894">result = merge(left, right)</para>
+        <para id="id3486901">return result</para>
+        <para id="id3486919">There are several variants for the merge() function, the simplest variant could look like this:</para>
+        <para id="id3486925">function merge(left,right)</para>
+        <para id="id3486937">var list result</para>
+        <para id="id3486964">while length(left) &gt; 0 and length(right) &gt; 0</para>
+        <para id="id3486991">if first(left) ≤ first(right)</para>
+        <para id="id3487009">append first(left) to result</para>
+        <para id="id3487017">left = rest(left)</para>
+        <para id="id3487025">else</para>
+        <para id="id3487038">append first(right) to result</para>
+        <para id="id3487046">right = rest(right)</para>
+        <para id="id3487054">if length(left) &gt; 0 </para>
+        <para id="id3487072">append rest(left) to result</para>
+        <para id="id3487080">if length(right) &gt; 0 </para>
+        <para id="id3487098">append rest(right) to result</para>
+        <para id="id3487106">return result</para>
+        <section id="id-259083718732">
+          <title>C++ implementation</title>
+          <para id="id3487141">Here is an implementation using the <link url="http://en.wikipedia.org/wiki/Standard_Template_Library">STL</link> algorithm std::inplace_merge to create an iterative bottom-up in-place merge sort:</para>
+          <para id="id3487165">#include &lt;iostream&gt;</para>
+          <para id="id3487173">#include &lt;vector&gt;</para>
+          <para id="id3487180">#include &lt;algorithm&gt;</para>
+          <para id="id3487188">#include &lt;iterator&gt;</para>
+          <para id="id3487197">int main()</para>
+          <para id="id3487213">{</para>
+          <para id="id3487220">std::vector&lt;unsigned&gt; data;</para>
+          <para id="id3487240">for(unsigned i = 0; i &lt; 10; i++)</para>
+          <para id="id3487288">data.push_back(i);</para>
+          <para id="id3487320">std::random_shuffle(data.begin(), data.end());</para>
+          <para id="id3487370">std::cout &lt;&lt; "Initial: ";</para>
+          <para id="id3487399">std::copy(data.begin(),data.end(),std::ostream_iterator&lt;unsigned&gt;(std::cout," "));</para>
+          <para id="id3487487">std::cout &lt;&lt; std::endl;</para>
+          <para id="id3487516">for(unsigned m = 1; m &lt;= data.size(); m *= 2)</para>
+          <para id="id3487573">{</para>
+          <para id="id3487586">for(unsigned i = 0; i &lt; data.size() - m; i += m * 2)</para>
+          <para id="id3487642">{</para>
+          <para id="id3487655">std::inplace_merge(</para>
+          <para id="id3487675">data.begin() + i,</para>
+          <para id="id3487698">data.begin() + i + m,</para>
+          <para id="id3487722">data.begin() + std::min&lt;unsigned&gt;(i + m * 2, (unsigned)data.size()));</para>
+          <para id="id3487800">}</para>
+          <para id="id3487814">}</para>
+          <para id="id3487828">std::cout &lt;&lt; "Sorted: ";</para>
+          <para id="id3487859">std::copy(data.begin(),data.end(),std::ostream_iterator&lt;unsigned&gt;(std::cout," "));</para>
+          <para id="id3487947">std::cout &lt;&lt; std::endl;</para>
+          <para id="id3487976">return 0;</para>
+          <para id="id3488002">}</para>
+        </section>
+      </section>
+      <section id="id-343086859823">
+        <title>Analysis</title>
+        <para id="id3488021">In sorting n items, merge sort has an <link url="http://en.wikipedia.org/wiki/Average_performance">average</link> and <link url="http://en.wikipedia.org/wiki/Worst-case_performance">worst-case performance</link> of <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n log n). If the running time of merge sort for a list of length n is T(n), then the recurrence T(n) = 2T(n/2) + n follows from the definition of the algorithm (apply the algorithm to two lists of half the size of the original list, and add the n steps taken to merge the resulting two lists). The closed form follows from the <link url="http://en.wikipedia.org/wiki/Master_theorem">master theorem</link>.</para>
+        <para id="id3488142">In the worst case, merge sort does approximately (n ⌈<link url="http://en.wikipedia.org/wiki/Binary_logarithm">lg</link> n⌉ - 2⌈lg n⌉ + 1) comparisons, which is between (n lg n - n + 1) and (n lg n + n + O(lg n)). <link url="http://en.wikipedia.org/wiki/Merge_sort#_note-1">[2]</link></para>
+        <para id="id3488246">For large n and a randomly ordered input list, merge sort's expected (average) number of comparisons approaches α·n fewer than the worst case where <media id="id6837664" alt=""><image src="../../media/Picture 451.png" mime-type="image/png" height="46" width="237"/></media>.</para>
+        <para id="id3488294">In the worst case, merge sort does about 39% fewer comparisons than <link url="http://en.wikipedia.org/wiki/Quicksort">quicksort</link> does in the average case; merge sort always makes fewer comparisons than quicksort, except in extremely rare cases, when they tie, where merge sort's worst case is found simultaneously with quicksort's best case. In terms of moves, merge sort's worst case complexity is <link url="http://en.wikipedia.org/wiki/Big_O_notation">O</link>(n log n)—the same complexity as quicksort's best case, and merge sort's best case takes about half as many iterations as the worst case.</para>
+        <para id="id3488364">Recursive implementations of merge sort make 2n - 1 method calls in the worst case, compared to quicksort's n, thus has roughly twice as much recursive overhead as quicksort. However, iterative, non-recursive, implementations of merge sort, avoiding method call overhead, are not difficult to code. Merge sort's most common implementation does not sort in place; therefore, the memory size of the input must be allocated for the sorted output to be stored in. Sorting in-place is possible but is very complicated, and will offer little performance gains in practice, even if the algorithm runs in O(n log n) time. In these cases, algorithms like <link url="http://en.wikipedia.org/wiki/Heapsort">heapsort</link> usually offer comparable speed, and are far less complex.</para>
+        <para id="id3488413">Merge sort is more efficient than quicksort for some types of lists if the data to be sorted can only be efficiently accessed sequentially, and is thus popular in languages such as <link url="http://en.wikipedia.org/wiki/Lisp_programming_language">Lisp</link>, where sequentially accessed data structures are very common. Unlike some (efficient) implementations of quicksort, merge sort is a <link url="http://en.wikipedia.org/wiki/Stable_sort">stable sort</link> as long as the merge operation is implemented properly.</para>
+        <para id="id3488447">As can be seen from the procedure MergeSort, there are some complaints. One complaint we might raise is its use of 2n locations; the additional n locations were needed because one couldn't reasonably merge two sorted sets in place. But despite the use of this space the algorithm must still work hard, copying the result placed into Result list back into m list on each call of merge . An alternative to this copying is to associate a new field of information with each key. (the elements in m are called keys). This field will be used to link the keys and any associated information together in a sorted list (keys and related informations are called records). Then the merging of the sorted lists proceeds by changing the link values and no records need to moved at all. A field which contains only a link will generally be smaller than an entire record so less space will also be used.</para>
+      </section>
+      <section id="id-605016183183">
+        <title>Merge sorting tape drives</title>
+        <para id="id3488485">Merge sort is so inherently sequential that it's practical to run it using slow tape drives as input and output devices. It requires very little memory, and the memory required does not change with the number of data elements. If you have four tape drives, it works as follows:</para>
+        <list id="id3488494" list-type="enumerated">
+          <item>Divide the data to be sorted in half and put half on each of two tapes</item>
+          <item>Merge individual pairs of records from the two tapes; write two-record chunks alternately to each of the two output tapes</item>
+          <item>Merge the two-record chunks from the two output tapes into four-record chunks; write these alternately to the original two input tapes</item>
+          <item>Merge the four-record chunks into eight-record chunks; write these alternately to the original two output tapes</item>
+          <item>Repeat until you have one chunk containing all the data, sorted --- that is, for log n passes, where n is the number of records.</item>
+        </list>
+        <para id="id3488553">For the same reason it is also very useful for sorting data on <link url="http://en.wikipedia.org/wiki/Disk_storage">disk</link> that is too large to fit entirely into <link url="http://en.wikipedia.org/wiki/Primary_storage">primary memory</link>. On tape drives that can run both backwards and forwards, you can run merge passes in both directions, avoiding rewind time.</para>
+      </section>
+      <section id="id-784065427539">
+        <title>Optimizing merge sort</title>
+        <para id="id3488604">This might seem to be of historical interest only, but on modern computers, <link url="http://en.wikipedia.org/wiki/Locality_of_reference">locality of reference</link> is of paramount importance in <link url="http://en.wikipedia.org/wiki/Software_optimization">software optimization</link>, because multi-level <link url="http://en.wikipedia.org/wiki/Memory_hierarchy">memory hierarchies</link> are used. In some sense, main RAM can be seen as a fast tape drive, level 3 cache memory as a slightly faster one, level 2 cache memory as faster still, and so on. In some circumstances, cache reloading might impose unacceptable overhead and a carefully crafted merge sort might result in a significant improvement in running time. This opportunity might change if fast memory becomes very cheap again, or if exotic architectures like the <link url="http://en.wikipedia.org/w/index.php?title=Tera_MTA&amp;action=edit">Tera MTA</link> become commonplace.</para>
+        <para id="id3488667">Designing a merge sort to perform optimally often requires adjustment to available hardware, eg. number of tape drives, or size and speed of the relevant cache memory levels.</para>
+      </section>
+      <section id="id-111535512425">
+        <title>Typical implementation bugs</title>
+        <para id="id3488692">A typical mistake made in many merge sort implementations is the division of index-based lists in two sublists. Many implementations determine the middle index as outlined in the following implementation example:</para>
+        <para id="id3488700">function merge(int left, int right)</para>
+        <para id="id3488729">{</para>
+        <para id="id3488733">if (left &lt; right) {</para>
+        <para id="id3488751">int middle = (left + right) / 2;</para>
+        <para id="id3488769">[...]</para>
+        <para id="id3488773">While this algorithm appears to work very well in most scenarios, it fails for very large lists. The addition of "left" and "right" would lead to an integer overflow, resulting in a completely wrong division of the list. This problem can be solved by increasing the data type size used for the addition, or by altering the algorithm:</para>
+        <para id="id3488783">int middle = left + ((right - left) / 2);</para>
+        <para id="id3488795">Note that the following two examples do not address the issue of integer overflow but dodge it under irrelevant efficiency claims</para>
+        <para id="id3488802">Probably faster, and arguably as clear is:</para>
+        <para id="id3488807">int middle = (left + right) &gt;&gt;&gt; 1;</para>
+        <para id="id3488819">In C and C++ (where you don't have the &gt;&gt;&gt; operator), you can do this:</para>
+        <para id="id3488825">middle = ((unsigned) (left + right)) &gt;&gt; 1;</para>
+        <para id="id3488830">See more information here: <link url="http://googleresearch.blogspot.com/2006/06/extra-extra-read-all-about-it-nearly.html">http://googleresearch.blogspot.com/2006/06/extra-extra-read-all-about-it-nearly.html</link></para>
+      </section>
+      <section id="id-627901162112">
+        <title>Comparison with other sort algorithms</title>
+        <para id="id3488867">Although <link url="http://en.wikipedia.org/wiki/Heapsort">heapsort</link> has the same time bounds as merge sort, it requires only Θ(1) auxiliary space instead of merge sort's Θ(n), and is often faster in practical implementations. <link url="http://en.wikipedia.org/wiki/Quicksort">Quicksort</link>, however, is considered by many to be the fastest general-purpose sort algorithm. On the plus side, merge sort is a stable sort, parallelizes better, and is more efficient at handling slow-to-access sequential media. Merge sort is often the best choice for sorting a <link url="http://en.wikipedia.org/wiki/Linked_list">linked list</link>: in this situation it is relatively easy to implement a merge sort in such a way that it requires only Θ(1) extra space, and the slow random-access performance of a linked list makes some other algorithms (such as quicksort) perform poorly, and others (such as heapsort) completely impossible.</para>
+        <para id="id3488926">As of <link url="http://en.wikipedia.org/wiki/Perl">Perl</link> 5.8, merge sort is its default sorting algorithm (it was quicksort in previous versions of Perl). In <link url="http://en.wikipedia.org/wiki/Java_platform">Java</link>, the <link url="http://java.sun.com/j2se/latest/docs/api/java/util/Arrays.html">Arrays.sort()</link> methods use mergesort or a tuned quicksort depending on the datatypes and for implementation efficiency switch to <link url="http://en.wikipedia.org/wiki/Insertion_sort">insertion sort</link> when fewer than seven array elements are being sorted.</para>
+        <para id="id3488983">Utility in online sorting</para>
+        <para id="id3488998">Mergesort's merge operation is useful in online sorting, where the list to be sorted is received a piece at a time, instead of all at the beginning (see <link url="http://en.wikipedia.org/wiki/Online_algorithm">online algorithm</link>). In this application, we sort each new piece that is received using any sorting algorithm, and then merge it into our sorted list so far using the merge operation. However, this approach can be expensive in time and space if the received pieces are small compared to the sorted list — a better approach in this case is to store the list in a <link url="http://en.wikipedia.org/wiki/Self-balancing_binary_search_tree">self-balancing binary search tree</link> and add elements to it as they are received.</para>
+      </section>
+    </section>
+  </content>
+</document>
