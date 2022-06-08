@@ -1,0 +1,22 @@
+<col:collection xmlns="http://cnx.rice.edu/collxml" xmlns:md="http://cnx.rice.edu/mdml" xmlns:col="http://cnx.rice.edu/collxml" xml:lang="zh">
+  <metadata xmlns:md="http://cnx.rice.edu/mdml" mdml-version="0.5">
+    <md:content-id>col10870</md:content-id>
+    <md:title>My first collection </md:title>
+    <md:language>zh</md:language>
+    <md:license url="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution License</md:license>
+    <md:uuid>98588c78-d0e7-4e54-8942-dd4db518f4fc</md:uuid>
+<md:slug>my-first-collection</md:slug>
+</metadata>
+  <col:content>
+    <col:subcollection>
+      <md:title>SECTION1</md:title>
+      <col:content>
+        <col:module document="m29530"/>
+        <col:module document="m17309"/>
+        <col:module document="m21628"/>
+      </col:content>
+    </col:subcollection>
+    <col:module document="m12340"/>
+    <col:module document="m15673"/>
+  </col:content>
+</col:collection>
